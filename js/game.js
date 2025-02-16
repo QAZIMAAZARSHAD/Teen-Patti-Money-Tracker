@@ -563,6 +563,7 @@ function showRound() {
 function checkElimination() {
   players.forEach(p => { if (p.active && p.chips < minBid) { p.active = false; } });
 }
+
 function nextTurn() {
   checkElimination();
   const roundActivePlayers = players.filter(p => p.active && !p.folded);
@@ -589,6 +590,7 @@ function nextTurn() {
   } while (!players[currentTurnIndex].active || players[currentTurnIndex].folded);
   renderGame();
 }
+
 function resetForNextRound() {
   checkElimination();
   if (players.filter(p => p.active).length === 1) {
@@ -609,6 +611,7 @@ function resetForNextRound() {
   });
   startRound();
 }
+
 function updateDealer() {
   let newDealerIndex = (dealerIndex + 1) % players.length;
   while (!players[newDealerIndex].active) {
@@ -618,6 +621,7 @@ function updateDealer() {
   dealerIndex = newDealerIndex;
   currentTurnIndex = dealerIndex;
 }
+
 function resetGame() {
   players = [];
   pot = 0;

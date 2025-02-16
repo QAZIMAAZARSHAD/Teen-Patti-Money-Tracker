@@ -80,6 +80,7 @@ document.getElementById("initialChipsMinus").addEventListener("click", function(
   textInput.value = newVal;
   updateInitialChipsLabel(newVal);
 });
+
 document.getElementById("initialChipsPlus").addEventListener("click", function() {
   const slider = document.getElementById("initialChipsSlider");
   const textInput = document.getElementById("initialChipsText");
@@ -100,6 +101,7 @@ document.getElementById("minBidMinus").addEventListener("click", function() {
   textInput.value = newVal;
   updateMinBidLabel(newVal);
 });
+
 document.getElementById("minBidPlus").addEventListener("click", function() {
   const slider = document.getElementById("minBidSlider");
   const textInput = document.getElementById("minBidText");
@@ -119,6 +121,7 @@ function syncRaiseFromSlider() {
   const textInput = document.getElementById("raiseText");
   textInput.value = slider.value;
 }
+
 function syncRaiseFromText(min, max) {
   const slider = document.getElementById("raiseSlider");
   const textInput = document.getElementById("raiseText");
@@ -128,3 +131,21 @@ function syncRaiseFromText(min, max) {
   slider.value = val;
   textInput.value = val;
 }
+
+document.getElementById("raiseMinus").addEventListener("click", function() {
+  const slider = document.getElementById("raiseSlider");
+  const textInput = document.getElementById("raiseText");
+  let step = parseInt(slider.step);
+  let newVal = Math.max(parseInt(slider.min), parseInt(slider.value) - step);
+  slider.value = newVal;
+  textInput.value = newVal;
+});
+
+document.getElementById("raisePlus").addEventListener("click", function() {
+  const slider = document.getElementById("raiseSlider");
+  const textInput = document.getElementById("raiseText");
+  let step = parseInt(slider.step);
+  let newVal = Math.min(parseInt(slider.max), parseInt(slider.value) + step);
+  slider.value = newVal;
+  textInput.value = newVal;
+});
