@@ -1,3 +1,8 @@
+/* Utility Classes */
+.hidden {
+  display: none;
+}
+
 /* Global Styles */
 body {
   font-family: 'Roboto', sans-serif;
@@ -110,7 +115,7 @@ button:hover {
   box-shadow: 0 3px 8px rgba(0,0,0,0.2);
 }
 
-/* New: Card Content Layout for Player Cards */
+/* Card Content Layout for Player Cards */
 .card-content {
   display: flex;
   justify-content: space-between;
