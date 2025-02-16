@@ -546,6 +546,7 @@ function showRound() {
         showAlertModal("Invalid winner.", function(){});
         return;
       }
+      updateStats(winner);
       winner.chips += pot;
       showAlertModal(winner.name + " wins the pot of " + pot + " chips!", function() {
         pot = 0;
