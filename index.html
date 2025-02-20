@@ -11,7 +11,6 @@
     />
     <link rel="stylesheet" href="style.css" />
   </head>
-
   <body>
     <div class="container">
       <h2>Teen Patti Chip Tracker</h2>
@@ -19,9 +18,8 @@
       <!-- Setup Screen -->
       <div id="setup">
         <h3>Game Setup</h3>
-        <!-- Initial Chips Control -->
-        <label>
-          Initial Chips:
+        <div class="input-group">
+          <label>Initial Chips:</label>
           <div class="control-container" id="initialChipsControl">
             <button id="initialChipsMinus">–</button>
             <input
@@ -41,10 +39,10 @@
               onchange="syncInitialChipsFromText()"
             />
           </div>
-        </label>
-        <!-- Minimum Bid Control -->
-        <label>
-          Minimum Bid:
+        </div>
+
+        <div class="input-group">
+          <label>Minimum Bid:</label>
           <div class="control-container" id="minBidControl">
             <button id="minBidMinus">–</button>
             <input
@@ -64,29 +62,36 @@
               onchange="syncMinBidFromText()"
             />
           </div>
-        </label>
-        <br /><br />
-        <h4>Add Players</h4>
-        <input type="text" id="playerName" placeholder="Player Name" />
-        <button onclick="addPlayer()">Add Player</button>
-        <ul id="playersList"></ul>
-        <br />
-        <button onclick="startGame()">Start Game</button>
+        </div>
+
+        <div class="input-group">
+          <label>Add Players:</label>
+          <div class="player-input">
+            <input
+              type="text"
+              id="playerName"
+              placeholder="Enter player name"
+            />
+            <button onclick="addPlayer()">Add</button>
+          </div>
+          <ul id="playersList"></ul>
+        </div>
+        <button class="start-btn" onclick="startGame()">Start Game</button>
       </div>
 
       <!-- Round Gameplay Screen -->
       <div id="round" class="hidden">
         <h3>Round In Progress</h3>
-        <div id="pot">Pot: 0</div>
-        <div id="currentBet">Current Bet: 0</div>
+        <div class="game-info">
+          <div id="pot">Pot: 0</div>
+          <div id="currentBet">Current Bet: 0</div>
+        </div>
         <div id="turnIndicator"></div>
-        <br />
         <div id="playersGame"></div>
-        <br />
         <div id="actions"></div>
       </div>
 
-      <!-- Winner Modal (used for rounds, not game winner) -->
+      <!-- Winner Modal (for round winner selection) -->
       <div id="winnerModal" class="modal">
         <div class="modal-content">
           <p id="modalText">Select Winner:</p>
@@ -105,7 +110,6 @@
             <button id="raisePlus">+</button>
             <input type="number" id="raiseText" />
           </div>
-          <br />
           <button id="raiseConfirm">Confirm</button>
           <button id="raiseCancel">Cancel</button>
         </div>
@@ -135,7 +139,7 @@
         <button id="homeButton">Home</button>
       </div>
     </div>
-    <!-- Include UI sync functions, modal functions, then game logic -->
+
     <script src="js/ui-sync.js"></script>
     <script src="js/modals.js"></script>
     <script src="js/game.js"></script>
