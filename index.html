@@ -1,109 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Teen Patti Chip Tracker</title>
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <div class="container">
-    <h2>Teen Patti Chip Tracker</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Teen Patti Chip Tracker</title>
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-    <!-- Setup Screen -->
-    <div id="setup">
-      <h3>Game Setup</h3>
-      <!-- Initial Chips Control -->
-      <label>
-        Initial Chips:
-        <div class="control-container" id="initialChipsControl">
-          <button id="initialChipsMinus">–</button>
-          <!-- Max is now 1,000,000 (10 lakh) -->
-          <input type="range" id="initialChipsSlider" min="100" max="1000000" step="100" value="1000" oninput="syncInitialChipsFromSlider()">
-          <button id="initialChipsPlus">+</button>
-          <input type="number" id="initialChipsText" value="1000" onchange="syncInitialChipsFromText()">
+  <body>
+    <div class="container">
+      <h2>Teen Patti Chip Tracker</h2>
+
+      <!-- Setup Screen -->
+      <div id="setup">
+        <h3>Game Setup</h3>
+        <!-- Initial Chips Control -->
+        <label>
+          Initial Chips:
+          <div class="control-container" id="initialChipsControl">
+            <button id="initialChipsMinus">–</button>
+            <input
+              type="range"
+              id="initialChipsSlider"
+              min="100"
+              max="1000000"
+              step="100"
+              value="1000"
+              oninput="syncInitialChipsFromSlider()"
+            />
+            <button id="initialChipsPlus">+</button>
+            <input
+              type="number"
+              id="initialChipsText"
+              value="1000"
+              onchange="syncInitialChipsFromText()"
+            />
+          </div>
+        </label>
+        <!-- Minimum Bid Control -->
+        <label>
+          Minimum Bid:
+          <div class="control-container" id="minBidControl">
+            <button id="minBidMinus">–</button>
+            <input
+              type="range"
+              id="minBidSlider"
+              min="10"
+              max="100"
+              step="10"
+              value="100"
+              oninput="syncMinBidFromSlider()"
+            />
+            <button id="minBidPlus">+</button>
+            <input
+              type="number"
+              id="minBidText"
+              value="100"
+              onchange="syncMinBidFromText()"
+            />
+          </div>
+        </label>
+        <br /><br />
+        <h4>Add Players</h4>
+        <input type="text" id="playerName" placeholder="Player Name" />
+        <button onclick="addPlayer()">Add Player</button>
+        <ul id="playersList"></ul>
+        <br />
+        <button onclick="startGame()">Start Game</button>
+      </div>
+
+      <!-- Round Gameplay Screen -->
+      <div id="round" class="hidden">
+        <h3>Round In Progress</h3>
+        <div id="pot">Pot: 0</div>
+        <div id="currentBet">Current Bet: 0</div>
+        <div id="turnIndicator"></div>
+        <br />
+        <div id="playersGame"></div>
+        <br />
+        <div id="actions"></div>
+      </div>
+
+      <!-- Winner Modal (used for rounds, not game winner) -->
+      <div id="winnerModal" class="modal">
+        <div class="modal-content">
+          <p id="modalText">Select Winner:</p>
+          <button id="option1"></button>
+          <button id="option2"></button>
         </div>
-      </label>
-      <!-- Minimum Bid Control -->
-      <label>
-        Minimum Bid:
-        <div class="control-container" id="minBidControl">
-          <button id="minBidMinus">–</button>
-          <!-- The max for min bid is set dynamically to 10% of initial chips -->
-          <input type="range" id="minBidSlider" min="10" max="100" step="10" value="100" oninput="syncMinBidFromSlider()">
-          <button id="minBidPlus">+</button>
-          <input type="number" id="minBidText" value="100" onchange="syncMinBidFromText()">
+      </div>
+
+      <!-- Raise Modal -->
+      <div id="raiseModal" class="modal">
+        <div class="modal-content">
+          <p id="raiseModalText">Select Raise Amount:</p>
+          <div class="control-container" id="raiseControl">
+            <button id="raiseMinus">–</button>
+            <input type="range" id="raiseSlider" step="10" />
+            <button id="raisePlus">+</button>
+            <input type="number" id="raiseText" />
+          </div>
+          <br />
+          <button id="raiseConfirm">Confirm</button>
+          <button id="raiseCancel">Cancel</button>
         </div>
-      </label>
-      <br /><br />
-      <h4>Add Players</h4>
-      <input type="text" id="playerName" placeholder="Player Name" />
-      <button onclick="addPlayer()">Add Player</button>
-      <ul id="playersList"></ul>
-      <br />
-      <button onclick="startGame()">Start Game</button>
-    </div>
-
-    <!-- Round Gameplay Screen -->
-    <div id="round" class="hidden">
-      <h3>Round In Progress</h3>
-      <div id="pot">Pot: 0</div>
-      <div id="currentBet">Current Bet: 0</div>
-      <div id="turnIndicator"></div>
-      <br />
-      <div id="playersGame"></div>
-      <br />
-      <div id="actions"></div>
-    </div>
-
-    <!-- Winner Modal -->
-    <div id="winnerModal" class="modal">
-      <div class="modal-content">
-        <p id="modalText">Select Winner:</p>
-        <button id="option1"></button>
-        <button id="option2"></button>
       </div>
-    </div>
 
-    <!-- Raise Modal -->
-    <div id="raiseModal" class="modal">
-      <div class="modal-content">
-        <p id="raiseModalText">Select Raise Amount:</p>
-        <div class="control-container" id="raiseControl">
-          <button id="raiseMinus">–</button>
-          <input type="range" id="raiseSlider" step="10">
-          <button id="raisePlus">+</button>
-          <input type="number" id="raiseText">
+      <!-- Alert Modal -->
+      <div id="alertModal" class="modal">
+        <div class="modal-content">
+          <p id="alertModalText">Alert message here</p>
+          <button id="alertOk">OK</button>
         </div>
-        <br>
-        <button id="raiseConfirm">Confirm</button>
-        <button id="raiseCancel">Cancel</button>
+      </div>
+
+      <!-- Confirmation Modal -->
+      <div id="confirmModal" class="modal">
+        <div class="modal-content">
+          <p id="confirmModalText">Are you sure?</p>
+          <button id="confirmYes">Yes</button>
+          <button id="confirmNo">No</button>
+        </div>
+      </div>
+
+      <!-- Winner Page -->
+      <div id="winnerPage" class="hidden">
+        <h1 id="winnerTitle">WINNER</h1>
+        <h2 id="winnerName"></h2>
+        <button id="homeButton">Home</button>
       </div>
     </div>
-    
-    <!-- Alert Modal -->
-    <div id="alertModal" class="modal">
-      <div class="modal-content">
-        <p id="alertModalText">Alert message here</p>
-        <button id="alertOk">OK</button>
-      </div>
-    </div>
-    
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal">
-      <div class="modal-content">
-        <p id="confirmModalText">Are you sure?</p>
-        <button id="confirmYes">Yes</button>
-        <button id="confirmNo">No</button>
-      </div>
-    </div>
-    
-  </div>
-  <!-- Include UI sync functions, modal functions, then game logic -->
-  <script src="js/ui-sync.js"></script>
-  <script src="js/modals.js"></script>
-  <script src="js/game.js"></script>
-</body>
+    <!-- Include UI sync functions, modal functions, then game logic -->
+    <script src="js/ui-sync.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/game.js"></script>
+  </body>
 </html>

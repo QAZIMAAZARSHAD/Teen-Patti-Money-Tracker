@@ -132,7 +132,6 @@ button:hover {
 }
 
 /* Donut (Radial) Progress for Win Percentage */
-/* Using CSS variable --percentage (in degrees, e.g., 0 to 360) */
 .radial-progress {
   position: relative;
   width: 60px;
@@ -203,6 +202,26 @@ button:hover {
   margin-top: 0;
   font-weight: 500;
   color: #0077cc;
+}
+
+/* Winner Page */
+#winnerPage {
+  text-align: center;
+  padding: 50px;
+}
+#winnerPage h1 {
+  font-size: 48px;
+  color: #0077cc;
+  margin-bottom: 20px;
+}
+#winnerPage h2 {
+  font-size: 36px;
+  color: #333;
+  margin-bottom: 30px;
+}
+#winnerPage button {
+  padding: 10px 20px;
+  font-size: 20px;
 }
 
 /* Responsive Styles */

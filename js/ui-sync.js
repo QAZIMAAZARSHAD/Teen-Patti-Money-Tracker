@@ -2,7 +2,7 @@
 /*
  * ui-sync.js
  *
- * This file handles all the UI synchronization functions for slider,
+ * This file handles all the UI synchronization functions for sliders,
  * plus/minus buttons, and text inputs in the setup and raise controls.
  */
 
@@ -10,23 +10,23 @@
 // Setup Controls Sync Functions
 // ------------------------------
 function updateInitialChipsLabel(val) {
-    val = Number(val);
-    
-    let minBidSlider = document.getElementById('minBidSlider');
-    let newMaxBid = Math.floor(val * 0.1);
-    minBidSlider.max = newMaxBid;
+  val = Number(val);
   
-    let minBidText = document.getElementById('minBidText');
-    
-    let currentMinBid = parseInt(minBidSlider.value);
-    if (currentMinBid > newMaxBid) {
-      minBidSlider.value = newMaxBid;
-      minBidText.value = newMaxBid; 
-      updateMinBidLabel(newMaxBid);
-    } else {
-      minBidText.value = currentMinBid;
-    }
+  let minBidSlider = document.getElementById('minBidSlider');
+  let newMaxBid = Math.floor(val * 0.1);
+  minBidSlider.max = newMaxBid;
+  
+  let minBidText = document.getElementById('minBidText');
+  
+  let currentMinBid = parseInt(minBidSlider.value);
+  if (currentMinBid > newMaxBid) {
+    minBidSlider.value = newMaxBid;
+    minBidText.value = newMaxBid; 
+    updateMinBidLabel(newMaxBid);
+  } else {
+    minBidText.value = currentMinBid; 
   }
+}
 
 function updateMinBidLabel(val) {
   document.getElementById('minBidLabel').textContent = val;
@@ -90,6 +90,7 @@ document.getElementById("initialChipsPlus").addEventListener("click", function()
   textInput.value = newVal;
   updateInitialChipsLabel(newVal);
 });
+
 document.getElementById("initialChipsText").addEventListener("change", syncInitialChipsFromText);
 
 document.getElementById("minBidMinus").addEventListener("click", function() {
@@ -111,6 +112,7 @@ document.getElementById("minBidPlus").addEventListener("click", function() {
   textInput.value = newVal;
   updateMinBidLabel(newVal);
 });
+
 document.getElementById("minBidText").addEventListener("change", syncMinBidFromText);
 
 // ------------------------------
@@ -121,7 +123,6 @@ function syncRaiseFromSlider() {
   const textInput = document.getElementById("raiseText");
   textInput.value = slider.value;
 }
-
 function syncRaiseFromText(min, max) {
   const slider = document.getElementById("raiseSlider");
   const textInput = document.getElementById("raiseText");

@@ -27,7 +27,7 @@ function addPlayer() {
   const nameInput = document.getElementById("playerName");
   const name = nameInput.value.trim();
   if (!name) {
-    showAlertModal("Enter player name.", function(){});
+    showAlertModal("Enter player name.", function () {});
     return;
   }
   players.push({
@@ -40,7 +40,7 @@ function addPlayer() {
     folded: false,
     hasRaised: false,
     wins: 0,
-    rounds: 0
+    rounds: 0,
   });
   nameInput.value = "";
   renderPlayersList();
@@ -49,7 +49,7 @@ function addPlayer() {
 function renderPlayersList() {
   const ul = document.getElementById("playersList");
   ul.innerHTML = "";
-  players.forEach(p => {
+  players.forEach((p) => {
     const li = document.createElement("li");
     li.textContent = p.name;
     ul.appendChild(li);
@@ -61,24 +61,27 @@ function renderPlayersList() {
 // ------------------------------
 function startGame() {
   if (players.length < 2) {
-    showAlertModal("At least 2 players are required to start the game!", function(){});
+    showAlertModal(
+      "At least 2 players are required to start the game!",
+      function () {}
+    );
     return;
   }
   initialChips = parseInt(document.getElementById("initialChipsSlider").value);
   minBid = parseInt(document.getElementById("minBidSlider").value);
   if (initialChips < 100) {
-    showAlertModal("Initial chips must be at least 100.", function(){});
+    showAlertModal("Initial chips must be at least 100.", function () {});
     return;
   }
   if (minBid < 10) {
-    showAlertModal("Minimum bid must be at least 10.", function(){});
+    showAlertModal("Minimum bid must be at least 10.", function () {});
     return;
   }
   if (minBid > initialChips) {
-    showAlertModal("Minimum bid cannot exceed initial chips.", function(){});
+    showAlertModal("Minimum bid cannot exceed initial chips.", function () {});
     return;
   }
-  players.forEach(p => {
+  players.forEach((p) => {
     p.chips = initialChips;
     p.contribution = 0;
     p.active = true;
@@ -97,7 +100,7 @@ function startGame() {
 
 function startRound() {
   currentTurnIndex = dealerIndex;
-  players.forEach(p => {
+  players.forEach((p) => {
     if (p.active) {
       p.folded = false;
       p.contribution = 0;
@@ -105,7 +108,7 @@ function startRound() {
     }
   });
   pot = 0;
-  players.forEach(p => {
+  players.forEach((p) => {
     if (p.active) {
       let ante = p.blind ? Math.floor(minBid / 2) : minBid;
       if (p.chips < minBid) {
@@ -123,7 +126,7 @@ function startRound() {
 }
 
 function updateStats(roundWinner) {
-  players.forEach(p => {
+  players.forEach((p) => {
     p.rounds = (p.rounds || 0) + 1;
   });
   roundWinner.wins = (roundWinner.wins || 0) + 1;
@@ -131,42 +134,48 @@ function updateStats(roundWinner) {
 
 function nextTurn() {
   checkElimination();
-  const roundActivePlayers = players.filter(p => p.active && !p.folded);
+  const roundActivePlayers = players.filter((p) => p.active && !p.folded);
   if (roundActivePlayers.length === 1) {
     let winner = roundActivePlayers[0];
     updateStats(winner);
     winner.chips += pot;
-    showAlertModal(winner.name + " wins the round and takes the pot of " + pot + " chips!", function() {
-      pot = 0;
-      resetForNextRound();
-    });
+    showAlertModal(
+      winner.name + " wins the round and takes the pot of " + pot + " chips!",
+      function () {
+        pot = 0;
+        resetForNextRound();
+      }
+    );
     return;
   }
-  const gameActivePlayers = players.filter(p => p.active);
+  const gameActivePlayers = players.filter((p) => p.active);
   if (gameActivePlayers.length === 1) {
     let winner = gameActivePlayers[0];
-    showAlertModal(winner.name + " is the game winner!", function() {
+    showAlertModal(winner.name + " is the game winner!", function () {
       resetGame();
     });
     return;
   }
   do {
     currentTurnIndex = (currentTurnIndex + 1) % players.length;
-  } while (!players[currentTurnIndex].active || players[currentTurnIndex].folded);
+  } while (
+    !players[currentTurnIndex].active ||
+    players[currentTurnIndex].folded
+  );
   renderGame();
 }
 
 function resetForNextRound() {
   checkElimination();
-  if (players.filter(p => p.active).length === 1) {
-    let winner = players.find(p => p.active);
-    showAlertModal(winner.name + " is the game winner!", function() {
+  if (players.filter((p) => p.active).length === 1) {
+    let winner = players.find((p) => p.active);
+    showAlertModal(winner.name + " is the game winner!", function () {
       resetGame();
     });
     return;
   }
   updateDealer();
-  players.forEach(p => {
+  players.forEach((p) => {
     if (p.active) {
       p.folded = false;
       p.contribution = 0;
@@ -208,7 +217,8 @@ function resetGame() {
 // ------------------------------
 function renderGame() {
   document.getElementById("pot").textContent = "Pot: " + pot;
-  document.getElementById("currentBet").textContent = "Current Bet: " + currentBet;
+  document.getElementById("currentBet").textContent =
+    "Current Bet: " + currentBet;
   const playersGameDiv = document.getElementById("playersGame");
   playersGameDiv.innerHTML = "";
   players.forEach((p, index) => {
@@ -218,12 +228,14 @@ function renderGame() {
       if (index === currentTurnIndex && !p.folded) {
         card.classList.add("active");
       }
-      // Use a flex container to show player info and the win chart side-by-side.
-      let blindCheckbox = `<input type="checkbox" id="blind-${p.id}" onchange="toggleBlindStatus(${p.id})" ${p.blind ? "checked" : ""} ${p.blind ? "" : "disabled"}>`;
+      let blindCheckbox = `<input type="checkbox" id="blind-${
+        p.id
+      }" onchange="toggleBlindStatus(${p.id})" ${p.blind ? "checked" : ""} ${
+        p.blind ? "" : "disabled"
+      }>`;
       let rounds = p.rounds || 0;
       let wins = p.wins || 0;
       let winPercentage = rounds > 0 ? Math.round((wins / rounds) * 100) : 0;
-      // Set CSS variable for the radial progress (convert percentage to degrees: percentage * 3.6)
       let degrees = winPercentage * 3.6;
       card.innerHTML = `
         <div class="card-content">
@@ -246,7 +258,7 @@ function renderGame() {
   });
   const currentPlayer = players[currentTurnIndex];
   document.getElementById("turnIndicator").textContent =
-      "Current Turn: " + (currentPlayer ? currentPlayer.name : "None");
+    "Current Turn: " + (currentPlayer ? currentPlayer.name : "None");
   renderActions();
 }
 
@@ -255,7 +267,7 @@ function renderGame() {
 // ------------------------------
 function toggleBlindStatus(id) {
   const checkbox = document.getElementById("blind-" + id);
-  const player = players.find(p => p.id === id);
+  const player = players.find((p) => p.id === id);
   if (!player) return;
   if (!checkbox.checked) {
     player.blind = false;
@@ -266,7 +278,7 @@ function toggleBlindStatus(id) {
 function renderActions() {
   const actionsDiv = document.getElementById("actions");
   actionsDiv.innerHTML = "";
-  const activePlayers = players.filter(p => p.active && !p.folded);
+  const activePlayers = players.filter((p) => p.active && !p.folded);
   if (activePlayers.length === 0) return;
   const currentPlayer = players[currentTurnIndex];
   if (!currentPlayer || !currentPlayer.active || currentPlayer.folded) return;
@@ -305,27 +317,35 @@ function renderActions() {
 function chal() {
   const currentPlayer = players[currentTurnIndex];
   if (!currentPlayer || !currentPlayer.active || currentPlayer.folded) return;
-  let requiredBet = currentPlayer.blind ? Math.floor(currentBet / 2) : currentBet;
+  let requiredBet = currentPlayer.blind
+    ? Math.floor(currentBet / 2)
+    : currentBet;
   if (currentPlayer.chips - requiredBet < minBid) {
-    showConfirmModal("Calling will leave you with fewer than the minimum bid. Press Yes to force a showdown/backshow, or No to pack.", function(decision) {
-      if (decision) {
-        if (players.filter(p => p.active && !p.folded).length === 2) {
-          showRound();
+    showConfirmModal(
+      "Calling will leave you with fewer than the minimum bid. Press Yes to force a showdown/backshow, or No to pack.",
+      function (decision) {
+        if (decision) {
+          if (players.filter((p) => p.active && !p.folded).length === 2) {
+            showRound();
+          } else {
+            requestBackShow();
+          }
         } else {
-          requestBackShow();
+          currentPlayer.folded = true;
+          nextTurn();
         }
-      } else {
-        currentPlayer.folded = true;
-        nextTurn();
       }
-    });
+    );
     return;
   }
   if (requiredBet > currentPlayer.chips) {
-    showAlertModal("Not enough chips to Chal. You are forced to Pack.", function() {
-      currentPlayer.folded = true;
-      nextTurn();
-    });
+    showAlertModal(
+      "Not enough chips to Chal. You are forced to Pack.",
+      function () {
+        currentPlayer.folded = true;
+        nextTurn();
+      }
+    );
     return;
   }
   currentPlayer.chips -= requiredBet;
@@ -339,18 +359,19 @@ function raiseBet() {
   const currentPlayer = players[currentTurnIndex];
   if (!currentPlayer || !currentPlayer.active || currentPlayer.folded) return;
   const minRaise = currentBet + 10;
-  let maxNewBet = currentPlayer.blind ? Math.floor(currentPlayer.chips * 2) : currentPlayer.chips;
+  let maxNewBet = currentPlayer.blind
+    ? Math.floor(currentPlayer.chips * 2)
+    : currentPlayer.chips;
   if (minRaise > maxNewBet) {
-    showAlertModal("Not enough chips to raise.", function(){});
+    showAlertModal("Not enough chips to raise.", function () {});
     return;
   }
-  const activePlayers = players.filter(p => p.active && !p.folded);
+  const activePlayers = players.filter((p) => p.active && !p.folded);
   if (activePlayers.length === 2) {
-    // For 2 players: automatically deduct and pass turn.
-    showRaiseModal(minRaise, maxNewBet, function(newBet) {
+    showRaiseModal(minRaise, maxNewBet, function (newBet) {
       let requiredBet = currentPlayer.blind ? Math.floor(newBet / 2) : newBet;
       if (requiredBet > currentPlayer.chips) {
-        showAlertModal("Not enough chips to raise.", function(){});
+        showAlertModal("Not enough chips to raise.", function () {});
         return;
       }
       currentPlayer.chips -= requiredBet;
@@ -360,7 +381,7 @@ function raiseBet() {
       nextTurn();
     });
   } else {
-    showRaiseModal(minRaise, maxNewBet, function(newBet) {
+    showRaiseModal(minRaise, maxNewBet, function (newBet) {
       currentBet = newBet;
       currentPlayer.hasRaised = true;
       renderGame();
@@ -370,7 +391,9 @@ function raiseBet() {
 
 function pack() {
   const currentPlayer = players[currentTurnIndex];
-  if (currentPlayer) { currentPlayer.folded = true; }
+  if (currentPlayer) {
+    currentPlayer.folded = true;
+  }
   nextTurn();
 }
 
@@ -386,11 +409,11 @@ function showWinnerModal(options, callback) {
   let newOption2 = option2Btn.cloneNode(true);
   option1Btn.parentNode.replaceChild(newOption1, option1Btn);
   option2Btn.parentNode.replaceChild(newOption2, option2Btn);
-  newOption1.addEventListener("click", function() {
+  newOption1.addEventListener("click", function () {
     modal.style.display = "none";
     callback(options[0].name);
   });
-  newOption2.addEventListener("click", function() {
+  newOption2.addEventListener("click", function () {
     modal.style.display = "none";
     callback(options[1].name);
   });
@@ -408,12 +431,14 @@ function showRaiseModal(min, max, callback) {
   slider.step = 10;
   slider.value = min;
   raiseText.value = min;
-  slider.oninput = function() {
+  slider.oninput = function () {
     raiseText.value = slider.value;
   };
-  raiseText.onchange = function() {
+  raiseText.onchange = function () {
     let val = parseInt(raiseText.value);
-    if (isNaN(val)) { val = min; }
+    if (isNaN(val)) {
+      val = min;
+    }
     val = Math.max(min, Math.min(max, val));
     slider.value = val;
     raiseText.value = val;
@@ -422,11 +447,11 @@ function showRaiseModal(min, max, callback) {
   const newCancelBtn = cancelBtn.cloneNode(true);
   confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
   cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-  newConfirmBtn.addEventListener("click", function() {
+  newConfirmBtn.addEventListener("click", function () {
     modal.style.display = "none";
     callback(parseInt(slider.value));
   });
-  newCancelBtn.addEventListener("click", function() {
+  newCancelBtn.addEventListener("click", function () {
     modal.style.display = "none";
   });
   modal.style.display = "flex";
@@ -439,7 +464,7 @@ function showAlertModal(message, callback) {
   modalText.textContent = message;
   const newOkBtn = okBtn.cloneNode(true);
   okBtn.parentNode.replaceChild(newOkBtn, okBtn);
-  newOkBtn.addEventListener("click", function() {
+  newOkBtn.addEventListener("click", function () {
     modal.style.display = "none";
     if (callback) callback();
   });
@@ -456,11 +481,11 @@ function showConfirmModal(message, callback) {
   const newNoBtn = noBtn.cloneNode(true);
   yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
   noBtn.parentNode.replaceChild(newNoBtn, noBtn);
-  newYesBtn.addEventListener("click", function() {
+  newYesBtn.addEventListener("click", function () {
     modal.style.display = "none";
     callback(true);
   });
-  newNoBtn.addEventListener("click", function() {
+  newNoBtn.addEventListener("click", function () {
     modal.style.display = "none";
     callback(false);
   });
@@ -470,66 +495,102 @@ function showConfirmModal(message, callback) {
 function requestBackShow() {
   const currentPlayer = players[currentTurnIndex];
   let prevIndex = (currentTurnIndex - 1 + players.length) % players.length;
-  while (!players[prevIndex].active || players[prevIndex].folded || prevIndex === currentTurnIndex) {
+  while (
+    !players[prevIndex].active ||
+    players[prevIndex].folded ||
+    prevIndex === currentTurnIndex
+  ) {
     prevIndex = (prevIndex - 1 + players.length) % players.length;
     if (prevIndex === currentTurnIndex) break;
   }
   const opponent = players[prevIndex];
-  let requiredBet = currentPlayer.blind ? Math.floor(currentBet / 2) : currentBet;
+  let requiredBet = currentPlayer.blind
+    ? Math.floor(currentBet / 2)
+    : currentBet;
   if (currentPlayer.chips < requiredBet) {
-    showAlertModal(currentPlayer.name + " does not have enough chips for back show. Forced to Pack.", function() {
-      currentPlayer.folded = true;
-      nextTurn();
-    });
+    showAlertModal(
+      currentPlayer.name +
+        " does not have enough chips for back show. Forced to Pack.",
+      function () {
+        currentPlayer.folded = true;
+        nextTurn();
+      }
+    );
     return;
   }
   currentPlayer.chips -= requiredBet;
   currentPlayer.contribution += requiredBet;
   pot += requiredBet;
-  showConfirmModal(opponent.name + ", do you accept a back show request from " + currentPlayer.name + "?", function(accept) {
-    if (accept) {
-      if (currentPlayer.blind) {
-        currentPlayer.blind = false;
-        const currCheckbox = document.getElementById("blind-" + currentPlayer.id);
-        if (currCheckbox) { currCheckbox.checked = false; currCheckbox.disabled = true; }
-      }
-      if (opponent.blind) {
-        opponent.blind = false;
-        const oppCheckbox = document.getElementById("blind-" + opponent.id);
-        if (oppCheckbox) { oppCheckbox.checked = false; oppCheckbox.disabled = true; }
-      }
-      showWinnerModal(
-        [
-          { name: currentPlayer.name, id: currentPlayer.id },
-          { name: opponent.name, id: opponent.id }
-        ],
-        function(winnerName) {
-          if (winnerName === currentPlayer.name) { opponent.folded = true; }
-          else if (winnerName === opponent.name) { currentPlayer.folded = true; }
-          nextTurn();
+  showConfirmModal(
+    opponent.name +
+      ", do you accept a back show request from " +
+      currentPlayer.name +
+      "?",
+    function (accept) {
+      if (accept) {
+        if (currentPlayer.blind) {
+          currentPlayer.blind = false;
+          const currCheckbox = document.getElementById(
+            "blind-" + currentPlayer.id
+          );
+          if (currCheckbox) {
+            currCheckbox.checked = false;
+            currCheckbox.disabled = true;
+          }
         }
-      );
-    } else {
-      showAlertModal("Back show declined.", function() {
-        nextTurn();
-      });
+        if (opponent.blind) {
+          opponent.blind = false;
+          const oppCheckbox = document.getElementById("blind-" + opponent.id);
+          if (oppCheckbox) {
+            oppCheckbox.checked = false;
+            oppCheckbox.disabled = true;
+          }
+        }
+        showWinnerModal(
+          [
+            { name: currentPlayer.name, id: currentPlayer.id },
+            { name: opponent.name, id: opponent.id },
+          ],
+          function (winnerName) {
+            if (winnerName === currentPlayer.name) {
+              opponent.folded = true;
+            } else if (winnerName === opponent.name) {
+              currentPlayer.folded = true;
+            }
+            nextTurn();
+          }
+        );
+      } else {
+        showAlertModal("Back show declined.", function () {
+          nextTurn();
+        });
+      }
     }
-  });
+  );
 }
 
 function showRound() {
-  const activePlayers = players.filter(p => p.active && !p.folded);
+  const activePlayers = players.filter((p) => p.active && !p.folded);
   if (activePlayers.length !== 2) {
-    showAlertModal("Show is only available when 2 players remain.", function(){});
+    showAlertModal(
+      "Show is only available when 2 players remain.",
+      function () {}
+    );
     return;
   }
   const currentPlayer = players[currentTurnIndex];
-  let requiredBet = currentPlayer.blind ? Math.floor(currentBet / 2) : currentBet;
+  let requiredBet = currentPlayer.blind
+    ? Math.floor(currentBet / 2)
+    : currentBet;
   if (currentPlayer.chips < requiredBet) {
-    showAlertModal(currentPlayer.name + " does not have enough chips for show. Forced to Pack.", function() {
-      currentPlayer.folded = true;
-      nextTurn();
-    });
+    showAlertModal(
+      currentPlayer.name +
+        " does not have enough chips for show. Forced to Pack.",
+      function () {
+        currentPlayer.folded = true;
+        nextTurn();
+      }
+    );
     return;
   }
   currentPlayer.chips -= requiredBet;
@@ -538,21 +599,28 @@ function showRound() {
   showWinnerModal(
     [
       { name: activePlayers[0].name, id: activePlayers[0].id },
-      { name: activePlayers[1].name, id: activePlayers[1].id }
+      { name: activePlayers[1].name, id: activePlayers[1].id },
     ],
-    function(winnerName) {
-      const winner = activePlayers.find(p => p.name === winnerName);
+    function (winnerName) {
+      const winner = activePlayers.find((p) => p.name === winnerName);
       if (!winner) {
-        showAlertModal("Invalid winner.", function(){});
+        showAlertModal("Invalid winner.", function () {});
         return;
       }
       updateStats(winner);
       winner.chips += pot;
-      showAlertModal(winner.name + " wins the pot of " + pot + " chips!", function() {
-        pot = 0;
-        players.forEach(p => { if (p.chips <= 0) { p.active = false; } });
-        resetForNextRound();
-      });
+      showAlertModal(
+        winner.name + " wins the pot of " + pot + " chips!",
+        function () {
+          pot = 0;
+          players.forEach((p) => {
+            if (p.chips <= 0) {
+              p.active = false;
+            }
+          });
+          resetForNextRound();
+        }
+      );
     }
   );
 }
@@ -561,47 +629,55 @@ function showRound() {
 // Game Flow Functions
 // ------------------------------
 function checkElimination() {
-  players.forEach(p => { if (p.active && p.chips < minBid) { p.active = false; } });
+  players.forEach((p) => {
+    if (p.active && p.chips < minBid) {
+      p.active = false;
+    }
+  });
 }
 
 function nextTurn() {
   checkElimination();
-  const roundActivePlayers = players.filter(p => p.active && !p.folded);
+  const gameActivePlayers = players.filter((p) => p.active);
+  if (gameActivePlayers.length === 1) {
+    let winner = gameActivePlayers[0];
+    showWinnerPage(winner);
+    return;
+  }
+
+  const roundActivePlayers = players.filter((p) => p.active && !p.folded);
   if (roundActivePlayers.length === 1) {
     let winner = roundActivePlayers[0];
     updateStats(winner);
     winner.chips += pot;
-    showAlertModal(winner.name + " wins the round and takes the pot of " + pot + " chips!", function() {
-      pot = 0;
-      resetForNextRound();
-    });
+    showAlertModal(
+      winner.name + " wins the round and takes the pot of " + pot + " chips!",
+      function () {
+        pot = 0;
+        resetForNextRound();
+      }
+    );
     return;
   }
-  const gameActivePlayers = players.filter(p => p.active);
-  if (gameActivePlayers.length === 1) {
-    let winner = gameActivePlayers[0];
-    showAlertModal(winner.name + " is the game winner!", function() {
-      resetGame();
-    });
-    return;
-  }
+
   do {
     currentTurnIndex = (currentTurnIndex + 1) % players.length;
-  } while (!players[currentTurnIndex].active || players[currentTurnIndex].folded);
+  } while (
+    !players[currentTurnIndex].active ||
+    players[currentTurnIndex].folded
+  );
   renderGame();
 }
 
 function resetForNextRound() {
   checkElimination();
-  if (players.filter(p => p.active).length === 1) {
-    let winner = players.find(p => p.active);
-    showAlertModal(winner.name + " is the game winner!", function() {
-      resetGame();
-    });
+  if (players.filter((p) => p.active).length === 1) {
+    let winner = players.find((p) => p.active);
+    showWinnerPage(winner);
     return;
   }
   updateDealer();
-  players.forEach(p => {
+  players.forEach((p) => {
     if (p.active) {
       p.folded = false;
       p.contribution = 0;
@@ -622,6 +698,22 @@ function updateDealer() {
   currentTurnIndex = dealerIndex;
 }
 
+function showWinnerPage(winner) {
+  document.getElementById("round").classList.add("hidden");
+  document.getElementById("setup").classList.add("hidden");
+
+  const winnerPage = document.getElementById("winnerPage");
+  const winnerNameElem = document.getElementById("winnerName");
+  winnerNameElem.textContent = winner.name;
+
+  winnerPage.removeAttribute("style");
+  winnerPage.classList.remove("hidden");
+
+  document.getElementById("homeButton").onclick = function () {
+    resetGame();
+  };
+}
+
 function resetGame() {
   players = [];
   pot = 0;
@@ -630,6 +722,7 @@ function resetGame() {
   roundActive = false;
   dealerIndex = 0;
   document.getElementById("round").classList.add("hidden");
+  document.getElementById("winnerPage").classList.add("hidden");
   document.getElementById("setup").classList.remove("hidden");
   document.getElementById("playersList").innerHTML = "";
   document.getElementById("initialChipsSlider").value = 1000;

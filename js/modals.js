@@ -16,7 +16,7 @@ function showAlertModal(message, callback) {
   modalText.textContent = message;
   const newOkBtn = okBtn.cloneNode(true);
   okBtn.parentNode.replaceChild(newOkBtn, okBtn);
-  newOkBtn.addEventListener("click", function() {
+  newOkBtn.addEventListener("click", function () {
     modal.style.display = "none";
     if (callback) callback();
   });
@@ -33,11 +33,11 @@ function showConfirmModal(message, callback) {
   const newNoBtn = noBtn.cloneNode(true);
   yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
   noBtn.parentNode.replaceChild(newNoBtn, noBtn);
-  newYesBtn.addEventListener("click", function() {
+  newYesBtn.addEventListener("click", function () {
     modal.style.display = "none";
     callback(true);
   });
-  newNoBtn.addEventListener("click", function() {
+  newNoBtn.addEventListener("click", function () {
     modal.style.display = "none";
     callback(false);
   });
@@ -56,12 +56,14 @@ function showRaiseModal(min, max, callback) {
   slider.step = 10;
   slider.value = min;
   raiseText.value = min;
-  slider.oninput = function() {
+  slider.oninput = function () {
     raiseText.value = slider.value;
   };
-  raiseText.onchange = function() {
+  raiseText.onchange = function () {
     let val = parseInt(raiseText.value);
-    if (isNaN(val)) { val = min; }
+    if (isNaN(val)) {
+      val = min;
+    }
     val = Math.max(min, Math.min(max, val));
     slider.value = val;
     raiseText.value = val;
@@ -70,11 +72,11 @@ function showRaiseModal(min, max, callback) {
   const newCancelBtn = cancelBtn.cloneNode(true);
   confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
   cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
-  newConfirmBtn.addEventListener("click", function() {
+  newConfirmBtn.addEventListener("click", function () {
     modal.style.display = "none";
     callback(parseInt(slider.value));
   });
-  newCancelBtn.addEventListener("click", function() {
+  newCancelBtn.addEventListener("click", function () {
     modal.style.display = "none";
   });
   modal.style.display = "flex";
@@ -92,11 +94,11 @@ function showWinnerModal(options, callback) {
   let newOption2 = option2Btn.cloneNode(true);
   option1Btn.parentNode.replaceChild(newOption1, option1Btn);
   option2Btn.parentNode.replaceChild(newOption2, option2Btn);
-  newOption1.addEventListener("click", function() {
+  newOption1.addEventListener("click", function () {
     modal.style.display = "none";
     callback(options[0].name);
   });
-  newOption2.addEventListener("click", function() {
+  newOption2.addEventListener("click", function () {
     modal.style.display = "none";
     callback(options[1].name);
   });
