@@ -1,4 +1,10 @@
 /* Utility Classes */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 .hidden {
   display: none;
 }
@@ -369,24 +375,40 @@ h3 {
 /* Responsive Styles */
 @media (max-width: 600px) {
   .container {
-    width: 95%;
+    width: 100%;
     padding: 15px;
+    margin: 0 auto;
   }
   input[type="range"] {
-    width: 100%;
+    width: auto;
   }
   .player-card {
-    width: 95%;
-    margin: 8px auto;
+    width: 93%;
   }
   #actions {
-    flex-direction: row;
-    gap: 6px;
+    gap: 10px;
   }
-  /* Reduce action button size on mobile */
   #actions button {
-    font-size: 12px;
+    font-size: 18px;
     padding: 6px 10px;
     min-width: 80px;
+  }
+  #raiseControl {
+    flex-wrap: nowrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+  }
+  #raiseControl input[type="range"] {
+    width: 40%;
+    min-width: 100px;
+  }
+  #raiseControl input[type="number"] {
+    width: 60px;
+    margin: 0;
+  }
+  #raiseControl button {
+    padding: 6px 9px;
+    font-size: 12px;
   }
 }
